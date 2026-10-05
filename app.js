@@ -82,11 +82,18 @@ async function register() {
         "Создание аккаунта...";
 
 
-    // Создаём аккаунт через Email + Password
+    // Создаём аккаунт и одновременно передаем имя и роль через метаданные (options.data)
+    // Триггер в Supabase автоматически подхватит их и создаст запись в таблице profiles
     const { data, error } =
         await supabaseClient.auth.signUp({
             email: email,
-            password: password
+            password: password,
+            options: {
+                data: {
+                    name: name,
+                    role: "teacher"
+                }
+            }
         });
 
 
@@ -94,34 +101,6 @@ async function register() {
         console.error(error);
         document.getElementById("registerMessage").innerText =
             "Ошибка регистрации: " + error.message;
-        return;
-    }
-
-
-    if (!data.user) {
-        document.getElementById("registerMessage").innerText =
-            "Не удалось создать аккаунт.";
-        return;
-    }
-
-
-    // Создаём профиль (без телефона)
-    const { error: profileError } =
-        await supabaseClient
-            .from("profiles")
-            .insert({
-                id: data.user.id,
-                name: name,
-                email: email, // Сохраняем почту и в профиль тоже
-                role: "teacher",
-                uploads_count: 0
-            });
-
-
-    if (profileError) {
-        console.error(profileError);
-        document.getElementById("registerMessage").innerText =
-            "Аккаунт создан, но профиль не создан.";
         return;
     }
 
