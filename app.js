@@ -1,141 +1,134 @@
+// ======================================================
+// LAB SHORTS
+// Авторизация: НОМЕР ТЕЛЕФОНА + ПАРОЛЬ
+// ======================================================
+
+
+// ======================================================
+// 1. НАСТРОЙКИ SUPABASE
+// ======================================================
+
 const SUPABASE_URL = "https://cibgooixsyfhnbskpxoy.supabase.co";
 
 const SUPABASE_KEY = "sb_publishable_5zfUVgE8walslrWBt2MOyg_y2eNJbKS";
 
-const supabaseClient =
-    supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
 
+const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+
+// ======================================================
+// 2. ПЕРЕМЕННЫЕ
+// ======================================================
 
 let currentUser = null;
 let currentProfile = null;
 
 
-// -------------------------
-// ПОКАЗ СТРАНИЦ
-// -------------------------
+// ======================================================
+// 3. ПОКАЗ СТРАНИЦ
+// ======================================================
 
 function showPage(page) {
 
-    document.querySelectorAll(".page")
-        .forEach(p => p.classList.remove("active"));
+    document.querySelectorAll(".page").forEach(function(element) {
+        element.classList.remove("active");
+    });
 
-    document.getElementById(page)
-        .classList.add("active");
+    const selectedPage = document.getElementById(page);
 
+    if (selectedPage) {
+        selectedPage.classList.add("active");
+    }
 }
 
 
-// -------------------------
-// LOGIN
-// -------------------------
-
-async function login() {
-
-    const phone =
-        document.getElementById("loginPhone").value.trim();
-
-    const password =
-        document.getElementById("loginPassword").value;
-
-    if (!phone || !password) {
-
-        document.getElementById("loginMessage")
-            .innerText = "Заполните все поля.";
-
-        return;
-    }
-
-
-    const email =
-        phone.replace(/\D/g, "") + "@labshorts.school";
-
-
-    const { data, error } =
-        await supabaseClient.auth.signInWithPassword({
-
-            email: email,
-            password: password
-
-        });
-
-
-    if (error) {
-
-        document.getElementById("loginMessage")
-            .innerText = "Неверный номер или пароль.";
-
-        return;
-    }
-
-
-    currentUser = data.user;
-
-    await loadProfile();
-
-    document.getElementById("loginScreen")
-        .classList.add("hidden");
-
-    document.getElementById("app")
-        .style.display = "block";
-
-    showPage("home");
-
-}
-
-
-// -------------------------
-// REGISTRATION
-// -------------------------
+// ======================================================
+// 4. РЕГИСТРАЦИЯ
+// ======================================================
 
 async function register() {
 
-    const name =
-        document.getElementById("registerName")
-            .value.trim();
+    const name = document
+        .getElementById("registerName")
+        .value
+        .trim();
 
-    const phone =
-        document.getElementById("registerPhone")
-            .value.trim();
+    const phone = document
+        .getElementById("registerPhone")
+        .value
+        .trim();
 
-    const password =
-        document.getElementById("registerPassword")
-            .value;
+    const password = document
+        .getElementById("registerPassword")
+        .value;
 
-    const schoolCode =
-        document.getElementById("schoolCode")
-            .value.trim();
+    const schoolCode = document
+        .getElementById("schoolCode")
+        .value
+        .trim();
 
+
+    // Проверяем поля
 
     if (!name || !phone || !password || !schoolCode) {
 
-        document.getElementById("registerMessage")
-            .innerText = "Заполните все поля.";
+        document.getElementById("registerMessage").innerText =
+            "Заполните все поля.";
 
         return;
     }
 
 
-    // Код школы
+    // Проверяем код школы
+
     if (schoolCode !== "LAB2026") {
 
-        document.getElementById("registerMessage")
-            .innerText = "Неверный код школы.";
+        document.getElementById("registerMessage").innerText =
+            "Неверный код школы.";
 
         return;
     }
 
 
-    const email =
-        phone.replace(/\D/g, "") + "@labshorts.school";
+    // Проверяем номер
 
+    const cleanPhone = phone.replace(/[^\d+]/g, "");
+
+
+    if (cleanPhone.length < 10) {
+
+        document.getElementById("registerMessage").innerText =
+            "Введите правильный номер телефона.";
+
+        return;
+    }
+
+
+    if (password.length < 6) {
+
+        document.getElementById("registerMessage").innerText =
+            "Пароль должен содержать минимум 6 символов.";
+
+        return;
+    }
+
+
+    document.getElementById("registerMessage").innerText =
+        "Создание аккаунта...";
+
+
+    // ==================================================
+    // СОЗДАЁМ АККАУНТ SUPABASE ПО НОМЕРУ
+    // ==================================================
 
     const { data, error } =
         await supabaseClient.auth.signUp({
 
-            email: email,
+            phone: cleanPhone,
+
             password: password
 
         });
@@ -143,26 +136,38 @@ async function register() {
 
     if (error) {
 
-        document.getElementById("registerMessage")
-            .innerText = error.message;
+        console.error(error);
+
+        document.getElementById("registerMessage").innerText =
+            "Ошибка регистрации: " + error.message;
 
         return;
     }
 
 
-    const user = data.user;
+    if (!data.user) {
 
+        document.getElementById("registerMessage").innerText =
+            "Не удалось создать пользователя.";
+
+        return;
+    }
+
+
+    // ==================================================
+    // СОЗДАЁМ ПРОФИЛЬ
+    // ==================================================
 
     const { error: profileError } =
         await supabaseClient
             .from("profiles")
             .insert({
 
-                id: user.id,
+                id: data.user.id,
 
                 name: name,
 
-                phone: phone,
+                phone: cleanPhone,
 
                 role: "teacher",
 
@@ -173,32 +178,124 @@ async function register() {
 
     if (profileError) {
 
-        document.getElementById("registerMessage")
-            .innerText =
-            "Аккаунт создан, но профиль не создан.";
+        console.error(profileError);
+
+        document.getElementById("registerMessage").innerText =
+            "Аккаунт создан, но профиль не удалось создать.";
 
         return;
     }
 
 
-    document.getElementById("registerMessage")
-        .innerText =
-        "Регистрация успешна. Теперь войдите.";
+    document.getElementById("registerMessage").innerText =
+        "Регистрация успешна!";
 
-    setTimeout(() => {
+
+    // Очищаем поля
+
+    document.getElementById("registerName").value = "";
+    document.getElementById("registerPhone").value = "";
+    document.getElementById("registerPassword").value = "";
+    document.getElementById("schoolCode").value = "";
+
+
+    // Переходим на вход
+
+    setTimeout(function() {
 
         showLogin();
 
-    }, 1500);
+    }, 1200);
 
 }
 
 
-// -------------------------
-// ПРОФИЛЬ
-// -------------------------
+// ======================================================
+// 5. ВХОД
+// ======================================================
+
+async function login() {
+
+    const phone = document
+        .getElementById("loginPhone")
+        .value
+        .trim();
+
+    const password = document
+        .getElementById("loginPassword")
+        .value;
+
+
+    if (!phone || !password) {
+
+        document.getElementById("loginMessage").innerText =
+            "Введите номер телефона и пароль.";
+
+        return;
+    }
+
+
+    const cleanPhone = phone.replace(/[^\d+]/g, "");
+
+
+    document.getElementById("loginMessage").innerText =
+        "Выполняется вход...";
+
+
+    const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+
+            phone: cleanPhone,
+
+            password: password
+
+        });
+
+
+    if (error) {
+
+        console.error(error);
+
+        document.getElementById("loginMessage").innerText =
+            "Неверный номер телефона или пароль.";
+
+        return;
+    }
+
+
+    currentUser = data.user;
+
+
+    await loadProfile();
+
+
+    // Закрываем окно входа
+
+    document.getElementById("loginScreen")
+        .classList.add("hidden");
+
+
+    // Показываем приложение
+
+    document.getElementById("app")
+        .style.display = "block";
+
+
+    showPage("home");
+
+}
+
+
+// ======================================================
+// 6. ЗАГРУЗКА ПРОФИЛЯ
+// ======================================================
 
 async function loadProfile() {
+
+    if (!currentUser) {
+        return;
+    }
+
 
     const { data, error } =
         await supabaseClient
@@ -210,7 +307,7 @@ async function loadProfile() {
 
     if (error) {
 
-        console.log(error);
+        console.error("Ошибка профиля:", error);
 
         return;
     }
@@ -219,14 +316,25 @@ async function loadProfile() {
     currentProfile = data;
 
 
+    // Имя
+
     document.getElementById("profileName")
         .innerText = data.name;
+
+
+    // Телефон
 
     document.getElementById("profilePhone")
         .innerText = data.phone;
 
+
+    // Количество загрузок
+
     document.getElementById("profileUploads")
         .innerText = data.uploads_count;
+
+
+    // Роль
 
     document.getElementById("profileRole")
         .innerText =
@@ -235,64 +343,131 @@ async function loadProfile() {
             : "Учитель";
 
 
+    // Если администратор
+
     if (data.role === "admin") {
 
-        const adminButton =
-            document.createElement("button");
-
-        adminButton.innerHTML =
-            "⚙️ Админ";
-
-        adminButton.onclick = () => {
-
-            showPage("admin");
-
-            loadAdmin();
-
-        };
-
-        document.querySelector("nav")
-            .appendChild(adminButton);
+        createAdminButton();
 
     }
 
 }
 
 
-// -------------------------
-// ЗАГРУЗКА ВИДЕО
-// -------------------------
+// ======================================================
+// 7. КНОПКА АДМИНИСТРАТОРА
+// ======================================================
+
+function createAdminButton() {
+
+    // Проверяем, есть ли уже кнопка
+
+    if (document.getElementById("adminNavButton")) {
+        return;
+    }
+
+
+    const button = document.createElement("button");
+
+    button.id = "adminNavButton";
+
+    button.innerHTML = `
+        ⚙️
+        <span>Админ</span>
+    `;
+
+
+    button.onclick = function() {
+
+        showPage("admin");
+
+        loadAdmin();
+
+    };
+
+
+    document.querySelector("nav")
+        .appendChild(button);
+
+}
+
+
+// ======================================================
+// 8. ЗАГРУЗКА ВИДЕО
+// ======================================================
 
 async function uploadVideo() {
 
-    if (!currentUser) {
+    if (!currentUser || !currentProfile) {
 
-        alert("Сначала войдите.");
+        alert("Сначала войдите в аккаунт.");
 
         return;
     }
 
 
-    const title =
-        document.getElementById("videoTitle")
-            .value.trim();
-
-    const description =
-        document.getElementById("videoDescription")
-            .value.trim();
-
-    const category =
-        document.getElementById("videoCategory")
-            .value;
-
-    const file =
-        document.getElementById("videoFile")
-            .files[0];
+    const title = document
+        .getElementById("videoTitle")
+        .value
+        .trim();
 
 
-    if (!title || !file) {
+    const description = document
+        .getElementById("videoDescription")
+        .value
+        .trim();
 
-        alert("Введите название и выберите видео.");
+
+    const category = document
+        .getElementById("videoCategory")
+        .value;
+
+
+    const fileInput =
+        document.getElementById("videoFile");
+
+
+    const file = fileInput.files[0];
+
+
+    // Проверяем название
+
+    if (!title) {
+
+        alert("Введите название видео.");
+
+        return;
+    }
+
+
+    // Проверяем видео
+
+    if (!file) {
+
+        alert("Выберите видео.");
+
+        return;
+    }
+
+
+    // Проверяем формат
+
+    if (!file.type.startsWith("video/")) {
+
+        alert("Можно загружать только видео.");
+
+        return;
+    }
+
+
+    // Ограничение размера — 100 МБ
+
+    const maxSize = 100 * 1024 * 1024;
+
+
+    if (file.size > maxSize) {
+
+        alert("Размер видео не должен превышать 100 МБ.");
 
         return;
     }
@@ -301,14 +476,27 @@ async function uploadVideo() {
     const status =
         document.getElementById("uploadStatus");
 
+
     status.innerText =
         "Загрузка видео...";
+
+
+    // ==================================================
+    // СОЗДАЁМ ИМЯ ФАЙЛА
+    // ==================================================
+
+    const extension =
+        file.name.split(".").pop();
 
 
     const fileName =
         Date.now() +
         "_" +
-        file.name.replace(/\s/g, "_");
+        Math.random()
+            .toString(36)
+            .substring(2, 8) +
+        "." +
+        extension;
 
 
     const filePath =
@@ -317,13 +505,27 @@ async function uploadVideo() {
         fileName;
 
 
+    // ==================================================
+    // ЗАГРУЖАЕМ В STORAGE
+    // ==================================================
+
     const { error: uploadError } =
-        await supabaseClient.storage
+        await supabaseClient
+            .storage
             .from("videos")
-            .upload(filePath, file);
+            .upload(
+                filePath,
+                file,
+                {
+                    cacheControl: "3600",
+                    upsert: false
+                }
+            );
 
 
     if (uploadError) {
+
+        console.error(uploadError);
 
         status.innerText =
             "Ошибка загрузки: " +
@@ -333,8 +535,13 @@ async function uploadVideo() {
     }
 
 
+    // ==================================================
+    // ПОЛУЧАЕМ ССЫЛКУ
+    // ==================================================
+
     const { data: urlData } =
-        supabaseClient.storage
+        supabaseClient
+            .storage
             .from("videos")
             .getPublicUrl(filePath);
 
@@ -342,6 +549,10 @@ async function uploadVideo() {
     const videoUrl =
         urlData.publicUrl;
 
+
+    // ==================================================
+    // СОХРАНЯЕМ ИНФОРМАЦИЮ О ВИДЕО
+    // ==================================================
 
     const { error: insertError } =
         await supabaseClient
@@ -358,42 +569,68 @@ async function uploadVideo() {
 
                 author_id: currentUser.id,
 
-                author_name: currentProfile.name
+                author_name: currentProfile.name,
+
+                views: 0
 
             });
 
 
     if (insertError) {
 
+        console.error(insertError);
+
         status.innerText =
-            "Видео загружено, но запись не создана.";
+            "Видео загружено, но данные не сохранились.";
 
         return;
     }
 
 
-    await supabaseClient
-        .from("profiles")
-        .update({
+    // ==================================================
+    // УВЕЛИЧИВАЕМ СЧЁТЧИК ЗАГРУЗОК
+    // ==================================================
 
-            uploads_count:
-                currentProfile.uploads_count + 1
-
-        })
-        .eq("id", currentUser.id);
+    const newUploadCount =
+        currentProfile.uploads_count + 1;
 
 
-    currentProfile.uploads_count++;
+    const { error: updateError } =
+        await supabaseClient
+            .from("profiles")
+            .update({
+
+                uploads_count: newUploadCount
+
+            })
+            .eq("id", currentUser.id);
+
+
+    if (updateError) {
+
+        console.error(updateError);
+
+    }
+
+
+    currentProfile.uploads_count =
+        newUploadCount;
 
 
     document.getElementById("profileUploads")
         .innerText =
-        currentProfile.uploads_count;
+        newUploadCount;
 
+
+    // ==================================================
+    // ГОТОВО
+    // ==================================================
 
     status.innerText =
-        "Видео успешно опубликовано!";
+        "✅ Видео успешно опубликовано!";
 
+
+    // Очищаем форму
 
     document.getElementById("videoTitle")
         .value = "";
@@ -404,35 +641,61 @@ async function uploadVideo() {
     document.getElementById("videoFile")
         .value = "";
 
+
+    // Через 1.5 секунды показываем ленту
+
+    setTimeout(function() {
+
+        loadVideos();
+
+        showPage("feed");
+
+    }, 1500);
+
 }
 
 
-// -------------------------
-// ЗАГРУЗКА ЛЕНТЫ
-// -------------------------
+// ======================================================
+// 9. ЗАГРУЗКА ЛЕНТЫ
+// ======================================================
 
 async function loadVideos() {
 
     const container =
         document.getElementById("videoList");
 
+
     container.innerHTML =
-        "Загрузка...";
+        "<p>Загрузка видео...</p>";
 
 
     const { data, error } =
         await supabaseClient
             .from("videos")
             .select("*")
-            .order("created_at", {
-                ascending: false
-            });
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
 
 
     if (error) {
 
+        console.error(error);
+
         container.innerHTML =
-            "Ошибка загрузки.";
+            "<p>Не удалось загрузить видео.</p>";
+
+        return;
+    }
+
+
+    if (!data || data.length === 0) {
+
+        container.innerHTML =
+            "<p>Пока нет загруженных видео.</p>";
 
         return;
     }
@@ -441,52 +704,7 @@ async function loadVideos() {
     container.innerHTML = "";
 
 
-    data.forEach(video => {
-
-        container.innerHTML += createVideoCard(video);
-
-    });
-
-}
-
-
-// -------------------------
-// КАТЕГОРИЯ
-// -------------------------
-
-async function loadCategory(category) {
-
-    const container =
-        document.getElementById("categoryVideos");
-
-    container.innerHTML =
-        "Загрузка...";
-
-
-    const { data, error } =
-        await supabaseClient
-            .from("videos")
-            .select("*")
-            .eq("category", category)
-            .order("created_at", {
-                ascending: false
-            });
-
-
-    if (error) {
-
-        container.innerHTML =
-            "Ошибка.";
-
-        return;
-    }
-
-
-    container.innerHTML =
-        `<h3>${category}</h3>`;
-
-
-    data.forEach(video => {
+    data.forEach(function(video) {
 
         container.innerHTML +=
             createVideoCard(video);
@@ -496,9 +714,70 @@ async function loadCategory(category) {
 }
 
 
-// -------------------------
-// КАРТОЧКА ВИДЕО
-// -------------------------
+// ======================================================
+// 10. ЗАГРУЗКА КАТЕГОРИИ
+// ======================================================
+
+async function loadCategory(category) {
+
+    const container =
+        document.getElementById("categoryVideos");
+
+
+    container.innerHTML =
+        "<p>Загрузка...</p>";
+
+
+    const { data, error } =
+        await supabaseClient
+            .from("videos")
+            .select("*")
+            .eq("category", category)
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+
+    if (error) {
+
+        console.error(error);
+
+        container.innerHTML =
+            "<p>Ошибка загрузки.</p>";
+
+        return;
+    }
+
+
+    container.innerHTML =
+        `<h3>${escapeHtml(category)}</h3>`;
+
+
+    if (!data || data.length === 0) {
+
+        container.innerHTML +=
+            "<p>В этом разделе пока нет видео.</p>";
+
+        return;
+    }
+
+
+    data.forEach(function(video) {
+
+        container.innerHTML +=
+            createVideoCard(video);
+
+    });
+
+}
+
+
+// ======================================================
+// 11. КАРТОЧКА ВИДЕО
+// ======================================================
 
 function createVideoCard(video) {
 
@@ -509,7 +788,8 @@ function createVideoCard(video) {
             <video
                 controls
                 playsinline
-                src="${video.video_url}">
+                preload="metadata"
+                src="${escapeHtml(video.video_url)}">
             </video>
 
             <h3>
@@ -523,9 +803,19 @@ function createVideoCard(video) {
             </p>
 
             <small>
-                ${escapeHtml(video.category)}
-                ·
-                ${escapeHtml(video.author_name)}
+                📁 ${escapeHtml(video.category)}
+            </small>
+
+            <br>
+
+            <small>
+                👤 ${escapeHtml(video.author_name)}
+            </small>
+
+            <br>
+
+            <small>
+                👁 ${video.views || 0}
             </small>
 
         </div>
@@ -535,33 +825,62 @@ function createVideoCard(video) {
 }
 
 
-// -------------------------
-// ADMIN
-// -------------------------
+// ======================================================
+// 12. ПАНЕЛЬ АДМИНИСТРАТОРА
+// ======================================================
 
 async function loadAdmin() {
 
-    if (!currentProfile ||
-        currentProfile.role !== "admin") {
+    if (
+        !currentProfile ||
+        currentProfile.role !== "admin"
+    ) {
+
+        alert("Доступ запрещён.");
 
         return;
     }
 
 
-    const { data: users } =
+    // Получаем пользователей
+
+    const { data: users, error: usersError } =
         await supabaseClient
             .from("profiles")
             .select("*")
-            .order("created_at", {
-                ascending: false
-            });
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
 
 
-    const { data: videos } =
+    if (usersError) {
+
+        console.error(usersError);
+
+        return;
+    }
+
+
+    // Получаем видео
+
+    const { data: videos, error: videosError } =
         await supabaseClient
             .from("videos")
             .select("id");
 
+
+    if (videosError) {
+
+        console.error(videosError);
+
+        return;
+    }
+
+
+    // Общая статистика
 
     document.getElementById("totalUsers")
         .innerText =
@@ -573,13 +892,16 @@ async function loadAdmin() {
         videos.length;
 
 
+    // Список пользователей
+
     const list =
         document.getElementById("usersList");
+
 
     list.innerHTML = "";
 
 
-    users.forEach(user => {
+    users.forEach(function(user) {
 
         list.innerHTML += `
 
@@ -591,23 +913,18 @@ async function loadAdmin() {
 
                 <br>
 
-                <span>
-                    ${escapeHtml(user.phone || "")}
-                </span>
+                📱
+                ${escapeHtml(user.phone || "")}
 
                 <br>
 
-                <span>
-                    Загружено:
-                    ${user.uploads_count}
-                </span>
+                🎬 Загружено:
+                ${user.uploads_count}
 
                 <br>
 
-                <span>
-                    Роль:
-                    ${user.role}
-                </span>
+                👤 Роль:
+                ${escapeHtml(user.role)}
 
             </div>
 
@@ -618,38 +935,48 @@ async function loadAdmin() {
 }
 
 
-// -------------------------
-// LOGOUT
-// -------------------------
+// ======================================================
+// 13. ВЫХОД
+// ======================================================
 
 async function logout() {
 
     await supabaseClient.auth.signOut();
+
+    currentUser = null;
+
+    currentProfile = null;
 
     location.reload();
 
 }
 
 
-// -------------------------
-// ПЕРЕКЛЮЧЕНИЕ LOGIN / REGISTER
-// -------------------------
+// ======================================================
+// 14. ПОКАЗ РЕГИСТРАЦИИ
+// ======================================================
 
 function showRegister() {
 
     document.getElementById("loginScreen")
         .classList.add("hidden");
 
+
     document.getElementById("registerScreen")
         .classList.remove("hidden");
 
 }
 
 
+// ======================================================
+// 15. ПОКАЗ ВХОДА
+// ======================================================
+
 function showLogin() {
 
     document.getElementById("registerScreen")
         .classList.add("hidden");
+
 
     document.getElementById("loginScreen")
         .classList.remove("hidden");
@@ -657,30 +984,34 @@ function showLogin() {
 }
 
 
-// -------------------------
-// ЗАЩИТА ОТ HTML
-// -------------------------
+// ======================================================
+// 16. ЗАЩИТА ТЕКСТА
+// ======================================================
 
 function escapeHtml(text) {
 
     const div =
         document.createElement("div");
 
-    div.textContent = text;
+
+    div.textContent =
+        text;
+
 
     return div.innerHTML;
 
 }
 
 
-// -------------------------
-// ПРОВЕРКА SESSION
-// -------------------------
+// ======================================================
+// 17. ЗАПУСК САЙТА
+// ======================================================
 
 async function startApp() {
 
     const { data } =
-        await supabaseClient.auth
+        await supabaseClient
+            .auth
             .getSession();
 
 
@@ -689,22 +1020,41 @@ async function startApp() {
         currentUser =
             data.session.user;
 
+
         await loadProfile();
+
 
         document.getElementById("loginScreen")
             .classList.add("hidden");
 
+
+        document.getElementById("registerScreen")
+            .classList.add("hidden");
+
+
         document.getElementById("app")
             .style.display = "block";
+
+
+        showPage("home");
+
 
     } else {
 
         document.getElementById("app")
             .style.display = "none";
 
+
+        document.getElementById("loginScreen")
+            .classList.remove("hidden");
+
     }
 
 }
 
+
+// ======================================================
+// 18. ЗАПУСК
+// ======================================================
 
 startApp();
