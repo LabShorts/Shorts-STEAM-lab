@@ -1,148 +1,478 @@
 <!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="kk">
 
-    <title>Lab Shorts</title>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Shorts STEAM Lab</title>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <link rel="stylesheet" href="style.css">
+
 </head>
+
 
 <body>
 
+
+<!-- =====================================================
+     ОСНОВНОЙ САЙТ
+===================================================== -->
+
 <div id="app">
 
+
+    <!-- ШАПКА -->
+
     <header>
-        <h1>Lab Shorts</h1>
-        <button id="logoutBtn" onclick="logout()">Выйти</button>
+
+        <div class="brand">
+
+            <img
+                src="logo.png"
+                alt="Shorts STEAM Lab"
+                class="logo-small"
+            >
+
+            <span>
+                Shorts STEAM Lab
+            </span>
+
+        </div>
+
+
+        <button
+            id="logoutBtn"
+            onclick="logout()"
+        >
+            Шығу
+        </button>
+
     </header>
+
+
+
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
 
     <main>
 
-        <!-- ГЛАВНАЯ -->
-        <section id="home" class="page active">
 
-            <div class="hero">
-                <h2>Lab Shorts</h2>
+        <!-- =================================================
+             1. БАСТЫ БЕТ
+        ================================================== -->
 
-                <p>
-                    Образовательная платформа коротких видеоуроков
-                    для учителей и учащихся.
-                </p>
+        <section
+            id="home"
+            class="page active"
+        >
 
-                <p>
-                    Здесь учителя могут делиться
-                    полезными видео по разным предметам.
-                </p>
+            <div class="home-hero">
+
+                <img
+                    src="logo.png"
+                    alt="Shorts STEAM Lab"
+                    class="main-logo"
+                >
+
+                <h1>
+                    Shorts STEAM Lab
+                </h1>
+
+                <h2>
+                    «Бір идея — мың мүмкіндік!»
+                </h2>
+
             </div>
 
-            <div class="info-card">
-                <h3>Контакты</h3>
 
-                <p>Email: labshorts@school.kz</p>
+            <div class="information-card">
+
+                <h2>
+                    Мұғалімдерге арналған идеялар
+                    мен бейнесабақтардың білім беру платформасы
+                </h2>
+
 
                 <p>
-                    Доступ предназначен для пользователей
-                    нашей школы.
+                    Бұл — ұстаздардың өзара тәжірибе
+                    алмасуына арналған бірегей кеңістік.
+                    Платформада сіз өз сабағыңызға қажетті
+                    жаңа идеяларды тауып, тәжірибеде қолдана
+                    аласыз, сондай-ақ өзіңіздің үздік
+                    әзірлемелеріңіз бен пайдалы бейнесабақтарыңызды
+                    өзге әріптестеріңізбен бөлісе аласыз.
                 </p>
+
+
+                <p>
+                    Мұнда мұғалімдер әртүрлі пәндер бойынша
+                    пайдалы бейнероликтерді жариялай алады.
+                </p>
+
+
+                <h3>
+                    STEAM бағыты 5 негізгі сала бойынша жүзеге асырылады:
+                </h3>
+
+
+                <div class="steam-mini-grid">
+
+                    <div class="steam-mini science">
+                        <strong>Science</strong>
+                        <span>Ғылым</span>
+                    </div>
+
+                    <div class="steam-mini technology">
+                        <strong>Technology</strong>
+                        <span>Технология</span>
+                    </div>
+
+                    <div class="steam-mini engineering">
+                        <strong>Engineering</strong>
+                        <span>Инженерия</span>
+                    </div>
+
+                    <div class="steam-mini art">
+                        <strong>Art</strong>
+                        <span>Өнер</span>
+                    </div>
+
+                    <div class="steam-mini mathematics">
+                        <strong>Mathematics</strong>
+                        <span>Математика</span>
+                    </div>
+
+                </div>
+
+
+                <div class="quote">
+                    «Бір идея — мың мүмкіндік!»
+                </div>
+
+
+                <div class="attention">
+
+                    <h3>
+                        ⚠️ Назар аударыңыз!
+                    </h3>
+
+                    <p>
+                        Платформаға кіру мүмкіндігі тек
+                        Мағжан Жұмабаев атындағы №19
+                        орта мектеп-гимназия мектебінің
+                        мұғалімдері мен пайдаланушыларына
+                        ғана арналған.
+                    </p>
+
+                </div>
+
+
+                <div class="contacts">
+
+                    <h3>
+                        Байланыс мәліметтері
+                    </h3>
+
+                    <p>
+                        📧 Электрондық пошта:
+                        labshorts@school.kz
+                    </p>
+
+                    <p>
+                        📍 Мекенжайы:
+                        Талдықорған қаласы,
+                        Мүшелтой шағын ауданы,
+                        14-үй.
+                    </p>
+
+
+                    <h3>
+                        Жоба авторларымен байланыс:
+                    </h3>
+
+                    <p>
+                        <strong>
+                            Бейсенбаева Назым Амангелдиевна
+                        </strong>
+                        <br>
+                        📞 +7 (705) 161-33-44
+                    </p>
+
+                    <p>
+                        <strong>
+                            Бижігітова Альмира Еламанқызы
+                        </strong>
+                        <br>
+                        📞 +7 (776) 005-95-04
+                    </p>
+
+                </div>
+
             </div>
 
         </section>
 
 
-        <!-- ЛЕНТА -->
-        <section id="feed" class="page">
 
-            <h2>Лента</h2>
+        <!-- =================================================
+             2. ЛЕНТА
+        ================================================== -->
+
+        <section
+            id="feed"
+            class="page"
+        >
+
+            <div class="section-title">
+
+                <h2>
+                    Лента
+                </h2>
+
+                <p>
+                    Мұғалімдердің сабақтарында қолданған
+                    әдістері мен бейнесабақтары
+                </p>
+
+            </div>
+
 
             <div id="videoList">
-                Загрузка видео...
+
+                <p>
+                    Бейнесабақтар жүктелуде...
+                </p>
+
             </div>
 
         </section>
 
 
-        <!-- LAB SHORTS -->
-        <section id="lab" class="page">
 
-            <h2>Lab Shorts</h2>
+        <!-- =================================================
+             3. SHORTS STEAM LAB
+        ================================================== -->
 
-            <div class="categories">
+        <section
+            id="lab"
+            class="page"
+        >
 
-                <button onclick="loadCategory('Инженерия')">
-                    ⚙️ Инженерия
-                </button>
+            <div class="section-title">
 
-                <button onclick="loadCategory('Технология')">
-                    💻 Технология
-                </button>
+                <h2>
+                    Shorts STEAM Lab
+                </h2>
 
-                <button onclick="loadCategory('Математика')">
-                    📐 Математика
-                </button>
-
-                <button onclick="loadCategory('Наука')">
-                    🔬 Наука
-                </button>
+                <p>
+                    STEAM бағыттары бойынша
+                    зертханалық бейнесабақтар мен идеялар
+                </p>
 
             </div>
+
+
+            <div class="steam-grid">
+
+
+                <button
+                    class="steam-card science"
+                    onclick="loadCategory('Science — Ғылым')"
+                >
+
+                    <span class="steam-icon">
+                        🔬
+                    </span>
+
+                    <strong>
+                        Science
+                    </strong>
+
+                    <small>
+                        Ғылым
+                    </small>
+
+                </button>
+
+
+
+                <button
+                    class="steam-card technology"
+                    onclick="loadCategory('Technology — Технология')"
+                >
+
+                    <span class="steam-icon">
+                        💻
+                    </span>
+
+                    <strong>
+                        Technology
+                    </strong>
+
+                    <small>
+                        Технология
+                    </small>
+
+                </button>
+
+
+
+                <button
+                    class="steam-card engineering"
+                    onclick="loadCategory('Engineering — Инженерия')"
+                >
+
+                    <span class="steam-icon">
+                        ⚙️
+                    </span>
+
+                    <strong>
+                        Engineering
+                    </strong>
+
+                    <small>
+                        Инженерия
+                    </small>
+
+                </button>
+
+
+
+                <button
+                    class="steam-card art"
+                    onclick="loadCategory('Art — Өнер')"
+                >
+
+                    <span class="steam-icon">
+                        🎨
+                    </span>
+
+                    <strong>
+                        Art
+                    </strong>
+
+                    <small>
+                        Өнер
+                    </small>
+
+                </button>
+
+
+
+                <button
+                    class="steam-card mathematics"
+                    onclick="loadCategory('Mathematics — Математика')"
+                >
+
+                    <span class="steam-icon">
+                        📐
+                    </span>
+
+                    <strong>
+                        Mathematics
+                    </strong>
+
+                    <small>
+                        Математика
+                    </small>
+
+                </button>
+
+
+            </div>
+
 
             <div id="categoryVideos"></div>
 
         </section>
 
 
-        <!-- ЗАГРУЗКА -->
-        <section id="upload" class="page">
 
-            <h2>Загрузить видео</h2>
+        <!-- =================================================
+             4. ЗАГРУЗКА
+        ================================================== -->
 
-            <div class="form">
+        <section
+            id="upload"
+            class="page"
+        >
 
-                <label>Название видео</label>
+            <div class="section-title">
+
+                <h2>
+                    Бейнесабақ жүктеу
+                </h2>
+
+                <p>
+                    Өз тәжірибеңізбен әріптестеріңізбен бөлісіңіз
+                </p>
+
+            </div>
+
+
+            <div class="form-card">
+
+
+                <label>
+                    Бейнесабақтың атауы
+                </label>
 
                 <input
                     id="videoTitle"
                     type="text"
-                    placeholder="Например: Двоичная система"
+                    placeholder="Бейнесабақтың атауын енгізіңіз"
                 >
 
 
-                <label>Описание</label>
+                <label>
+                    Сипаттамасы
+                </label>
 
                 <textarea
                     id="videoDescription"
-                    placeholder="Краткое описание видео"
+                    placeholder="Қысқаша сипаттама"
                 ></textarea>
 
 
-                <label>Раздел</label>
+                <label>
+                    Бағыты
+                </label>
 
                 <select id="videoCategory">
 
-                    <option value="Инженерия">
-                        Инженерия
+                    <option value="Science — Ғылым">
+                        Science — Ғылым
                     </option>
 
-                    <option value="Технология">
-                        Технология
+                    <option value="Technology — Технология">
+                        Technology — Технология
                     </option>
 
-                    <option value="Математика">
-                        Математика
+                    <option value="Engineering — Инженерия">
+                        Engineering — Инженерия
                     </option>
 
-                    <option value="Наука">
-                        Наука
+                    <option value="Art — Өнер">
+                        Art — Өнер
+                    </option>
+
+                    <option value="Mathematics — Математика">
+                        Mathematics — Математика
                     </option>
 
                 </select>
 
 
-                <label>Видео</label>
+                <label>
+                    Бейнесабақ
+                </label>
 
                 <input
                     id="videoFile"
@@ -152,11 +482,12 @@
 
 
                 <button
-                    class="primary"
+                    class="publish-button"
                     onclick="uploadVideo()"
                 >
-                    Опубликовать
+                    🎬 Жариялау
                 </button>
+
 
                 <p id="uploadStatus"></p>
 
@@ -165,139 +496,274 @@
         </section>
 
 
-        <!-- КАБИНЕТ -->
-        <section id="profile" class="page">
 
-            <h2>Личный кабинет</h2>
+        <!-- =================================================
+             5. ЖЕКЕ КАБИНЕТ
+        ================================================== -->
+
+        <section
+            id="profile"
+            class="page"
+        >
+
+            <div class="section-title">
+
+                <h2>
+                    Жеке кабинет
+                </h2>
+
+            </div>
+
 
             <div class="profile-card">
 
-                <div class="avatar">
+                <div class="profile-avatar">
                     👤
                 </div>
 
-                <h3 id="profileName">
-                    Пользователь
-                </h3>
 
-                <p id="profilePhone"></p>
+                <h2 id="profileName">
+                    Пайдаланушы
+                </h2>
 
-                <p>
-                    Загружено видео:
-                    <strong id="profileUploads">0</strong>
+
+                <p id="profilePhone">
                 </p>
 
-                <p>
-                    Роль:
-                    <strong id="profileRole">Учитель</strong>
-                </p>
+
+                <div class="profile-stat">
+
+                    <span>
+                        🎬 Жүктелген бейнесабақтар
+                    </span>
+
+                    <strong id="profileUploads">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-stat">
+
+                    <span>
+                        👤 Пайдаланушы түрі
+                    </span>
+
+                    <strong id="profileRole">
+                        Мұғалім
+                    </strong>
+
+                </div>
 
             </div>
 
         </section>
 
 
-        <!-- АДМИН -->
-        <section id="admin" class="page">
 
-            <h2>Панель администратора</h2>
+        <!-- =================================================
+             6. АДМИН
+        ================================================== -->
 
-            <div class="stats">
+        <section
+            id="admin"
+            class="page"
+        >
 
-                <div>
-                    <strong id="totalUsers">0</strong>
-                    <span>Пользователей</span>
+            <div class="section-title">
+
+                <h2>
+                    Әкімші панелі
+                </h2>
+
+            </div>
+
+
+            <div class="admin-stat-grid">
+
+                <div class="admin-stat">
+
+                    <strong id="totalUsers">
+                        0
+                    </strong>
+
+                    <span>
+                        Пайдаланушылар
+                    </span>
+
                 </div>
 
-                <div>
-                    <strong id="totalVideos">0</strong>
-                    <span>Видео</span>
+
+                <div class="admin-stat">
+
+                    <strong id="totalVideos">
+                        0
+                    </strong>
+
+                    <span>
+                        Бейнесабақтар
+                    </span>
+
                 </div>
 
             </div>
 
-            <h3>Пользователи</h3>
+
+            <h3>
+                Пайдаланушылар
+            </h3>
+
 
             <div id="usersList"></div>
 
         </section>
 
+
     </main>
 
 
-    <!-- НИЖНЕЕ МЕНЮ -->
+
+    <!-- =====================================================
+         НИЖНЕЕ МЕНЮ
+    ====================================================== -->
 
     <nav>
 
+
         <button onclick="showPage('home')">
-            🏠
-            <span>Главная</span>
+
+            <span class="nav-icon">
+                🏠
+            </span>
+
+            <span>
+                Басты бет
+            </span>
+
         </button>
 
-        <button onclick="showPage('feed'); loadVideos()">
-            ▶️
-            <span>Лента</span>
-        </button>
 
-        <button onclick="showPage('lab')">
-            🧪
-            <span>Lab Shorts</span>
-        </button>
 
         <button
-            class="upload-button"
-            onclick="showPage('upload')"
+            onclick="showPage('feed'); loadVideos()"
         >
-            ＋
+
+            <span class="nav-icon">
+                ▶️
+            </span>
+
+            <span>
+                Лента
+            </span>
+
         </button>
 
-        <button onclick="showPage('profile')">
-            👤
-            <span>Кабинет</span>
+
+
+        <button onclick="showPage('lab')">
+
+            <span class="nav-icon">
+                🧪
+            </span>
+
+            <span>
+                Shorts Lab
+            </span>
+
         </button>
+
+
+
+        <button
+            class="plus-button"
+            onclick="showPage('upload')"
+        >
+            +
+        </button>
+
+
+
+        <button onclick="showPage('profile')">
+
+            <span class="nav-icon">
+                👤
+            </span>
+
+            <span>
+                Жеке кабинет
+            </span>
+
+        </button>
+
 
     </nav>
 
 </div>
 
 
-<!-- LOGIN -->
+
+<!-- =====================================================
+     СТРАНИЦА ВХОДА
+====================================================== -->
 
 <div id="loginScreen">
 
-    <div class="login-box">
 
-        <h1>Lab Shorts</h1>
+    <div class="auth-box">
 
-        <p>Образовательная платформа школы</p>
+
+        <img
+            src="logo.png"
+            alt="Shorts STEAM Lab"
+            class="auth-logo"
+        >
+
+
+        <h1>
+            Shorts STEAM Lab
+        </h1>
+
+
+        <h2>
+            «Бір идея — мың мүмкіндік!»
+        </h2>
+
+
+        <p>
+            Мұғалімдердің білім беру платформасы
+        </p>
 
 
         <input
             id="loginEmail"
-            type="text"
-            placeholder="Почта"
+            type="email"
+            placeholder="Электрондық пошта"
         >
+
 
         <input
             id="loginPassword"
             type="password"
-            placeholder="Пароль"
+            placeholder="Құпиясөз"
         >
 
+
         <button
-            class="primary"
+            class="auth-primary"
             onclick="login()"
         >
-            Войти
+            Кіру
         </button>
 
 
         <button
-            class="secondary"
+            class="auth-secondary"
             onclick="showRegister()"
         >
-            Регистрация
+            Тіркелу
         </button>
+
 
         <p id="loginMessage"></p>
 
@@ -306,56 +772,90 @@
 </div>
 
 
-<!-- REGISTER -->
 
-<div id="registerScreen" class="hidden">
+<!-- =====================================================
+     РЕГИСТРАЦИЯ
+====================================================== -->
 
-    <div class="login-box">
+<div
+    id="registerScreen"
+    class="hidden"
+>
 
-        <h1>Регистрация</h1>
+
+    <div class="auth-box">
+
+
+        <img
+            src="logo.png"
+            alt="Shorts STEAM Lab"
+            class="auth-logo"
+        >
+
+
+        <h1>
+            Shorts STEAM Lab
+        </h1>
+
+
+        <h2>
+            «Бір идея — мың мүмкіндік!»
+        </h2>
+
+
+        <p>
+            Жаңа пайдаланушыны тіркеу
+        </p>
 
 
         <input
             id="registerName"
             type="text"
-            placeholder="Имя и фамилия"
+            placeholder="Аты-жөні"
+        >
+
+
+        <input
+            id="registerPhone"
+            type="text"
+            placeholder="Телефон нөмірі"
         >
 
 
         <input
             id="registerEmail"
-            type="text"
-            placeholder="Почта"
+            type="email"
+            placeholder="Электрондық пошта"
         >
 
 
         <input
             id="registerPassword"
             type="password"
-            placeholder="Пароль"
+            placeholder="Құпиясөз"
         >
 
 
         <input
             id="schoolCode"
             type="text"
-            placeholder="Код школы"
+            placeholder="Мектеп коды"
         >
 
 
         <button
-            class="primary"
+            class="auth-primary"
             onclick="register()"
         >
-            Создать аккаунт
+            Тіркелу
         </button>
 
 
         <button
-            class="secondary"
+            class="auth-secondary"
             onclick="showLogin()"
         >
-            Уже есть аккаунт
+            Кіру бетіне оралу
         </button>
 
 
@@ -369,4 +869,5 @@
 <script src="app.js"></script>
 
 </body>
+
 </html>
