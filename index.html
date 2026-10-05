@@ -180,4 +180,193 @@
                     Пользователь
                 </h3>
 
-                <p id="profileEmail"></p>
+                <p id="profilePhone"></p>
+
+                <p>
+                    Загружено видео:
+                    <strong id="profileUploads">0</strong>
+                </p>
+
+                <p>
+                    Роль:
+                    <strong id="profileRole">Учитель</strong>
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- АДМИН -->
+        <section id="admin" class="page">
+
+            <h2>Панель администратора</h2>
+
+            <div class="stats">
+
+                <div>
+                    <strong id="totalUsers">0</strong>
+                    <span>Пользователей</span>
+                </div>
+
+                <div>
+                    <strong id="totalVideos">0</strong>
+                    <span>Видео</span>
+                </div>
+
+            </div>
+
+            <h3>Пользователи</h3>
+
+            <div id="usersList"></div>
+
+        </section>
+
+    </main>
+
+
+    <!-- НИЖНЕЕ МЕНЮ -->
+
+    <nav>
+
+        <button onclick="showPage('home')">
+            🏠
+            <span>Главная</span>
+        </button>
+
+        <button onclick="showPage('feed'); loadVideos()">
+            ▶️
+            <span>Лента</span>
+        </button>
+
+        <button onclick="showPage('lab')">
+            🧪
+            <span>Lab Shorts</span>
+        </button>
+
+        <button
+            class="upload-button"
+            onclick="showPage('upload')"
+        >
+            ＋
+        </button>
+
+        <button onclick="showPage('profile')">
+            👤
+            <span>Кабинет</span>
+        </button>
+
+    </nav>
+
+</div>
+
+
+<!-- LOGIN -->
+
+<div id="loginScreen">
+
+    <div class="login-box">
+
+        <h1>Lab Shorts</h1>
+
+        <p>Образовательная платформа школы</p>
+
+
+        <input
+            id="loginEmail"
+            type="text"
+            placeholder="Почта"
+        >
+
+        <input
+            id="loginPassword"
+            type="password"
+            placeholder="Пароль"
+        >
+
+        <button
+            class="primary"
+            onclick="login()"
+        >
+            Войти
+        </button>
+
+
+        <button
+            class="secondary"
+            onclick="showRegister()"
+        >
+            Регистрация
+        </button>
+
+        <p id="loginMessage"></p>
+
+    </div>
+
+</div>
+
+
+<!-- REGISTER -->
+
+<div id="registerScreen" class="hidden">
+
+    <div class="login-box">
+
+        <h1>Регистрация</h1>
+
+
+        <input
+            id="registerName"
+            type="text"
+            placeholder="Имя и фамилия"
+        >
+
+
+        <input
+            id="registerEmail"
+            type="text"
+            placeholder="Почта"
+        >
+
+
+        <input
+            id="registerPassword"
+            type="password"
+            placeholder="Пароль"
+        >
+
+
+        <input
+            id="schoolCode"
+            type="text"
+            placeholder="Код школы"
+        >
+
+
+        <button
+            class="primary"
+            onclick="register()"
+        >
+            Создать аккаунт
+        </button>
+
+
+        <button
+            class="secondary"
+            onclick="showLogin()"
+        >
+            Уже есть аккаунт
+        </button>
+
+
+        <p id="registerMessage"></p>
+
+    </div>
+
+</div>
+
+
+<script src="app.js"></script>
+
+</body>
+</html>
