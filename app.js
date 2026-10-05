@@ -20,7 +20,6 @@ let currentProfile = null;
 // ======================================================
 
 function showPage(page) {
-
     document.querySelectorAll(".page").forEach(function(element) {
         element.classList.remove("active");
     });
@@ -38,14 +37,8 @@ function showPage(page) {
 // ======================================================
 
 async function register() {
-
     const name = document
         .getElementById("registerName")
-        .value
-        .trim();
-
-    const phone = document
-        .getElementById("registerPhone")
         .value
         .trim();
 
@@ -64,29 +57,23 @@ async function register() {
         .trim();
 
 
-    if (!name || !phone || !email || !password || !schoolCode) {
-
+    if (!name || !email || !password || !schoolCode) {
         document.getElementById("registerMessage").innerText =
             "Заполните все поля.";
-
         return;
     }
 
 
     if (schoolCode !== "LAB2026") {
-
         document.getElementById("registerMessage").innerText =
             "Неверный код школы.";
-
         return;
     }
 
 
     if (password.length < 6) {
-
         document.getElementById("registerMessage").innerText =
             "Пароль должен содержать минимум 6 символов.";
-
         return;
     }
 
@@ -96,83 +83,61 @@ async function register() {
 
 
     // Создаём аккаунт через Email + Password
-
     const { data, error } =
         await supabaseClient.auth.signUp({
-
             email: email,
-
             password: password
-
         });
 
 
     if (error) {
-
         console.error(error);
-
         document.getElementById("registerMessage").innerText =
             "Ошибка регистрации: " + error.message;
-
         return;
     }
 
 
     if (!data.user) {
-
         document.getElementById("registerMessage").innerText =
             "Не удалось создать аккаунт.";
-
         return;
     }
 
 
-    // Создаём профиль
-
+    // Создаём профиль (без телефона)
     const { error: profileError } =
         await supabaseClient
             .from("profiles")
             .insert({
-
                 id: data.user.id,
-
                 name: name,
-
-                phone: phone,
-
+                email: email, // Сохраняем почту и в профиль тоже
                 role: "teacher",
-
                 uploads_count: 0
-
             });
 
 
     if (profileError) {
-
         console.error(profileError);
-
         document.getElementById("registerMessage").innerText =
             "Аккаунт создан, но профиль не создан.";
-
         return;
     }
 
 
     document.getElementById("registerMessage").innerText =
-        "Регистрация успешна! Проверьте почту, если требуется подтверждение.";
+        "Регистрация успешна! Теперь вы можете войти.";
 
 
     document.getElementById("registerName").value = "";
-    document.getElementById("registerPhone").value = "";
     document.getElementById("registerEmail").value = "";
     document.getElementById("registerPassword").value = "";
     document.getElementById("schoolCode").value = "";
 
 
     setTimeout(function() {
-
         showLogin();
-
     }, 2000);
 }
 
@@ -182,7 +147,6 @@ async function register() {
 // ======================================================
 
 async function login() {
-
     const email = document
         .getElementById("loginEmail")
         .value
@@ -194,10 +158,8 @@ async function login() {
 
 
     if (!email || !password) {
-
         document.getElementById("loginMessage").innerText =
             "Введите email и пароль.";
-
         return;
     }
 
@@ -208,42 +170,31 @@ async function login() {
 
     const { data, error } =
         await supabaseClient.auth.signInWithPassword({
-
             email: email,
-
             password: password
-
         });
 
 
     if (error) {
-
         console.error(error);
-
         document.getElementById("loginMessage").innerText =
             "Неверный email или пароль.";
-
         return;
     }
 
 
     currentUser = data.user;
 
-
     await loadProfile();
-
 
     document.getElementById("loginScreen")
         .classList.add("hidden");
 
-
     document.getElementById("registerScreen")
         .classList.add("hidden");
 
-
     document.getElementById("app")
         .style.display = "block";
-
 
     showPage("home");
 }
@@ -254,11 +205,9 @@ async function login() {
 // ======================================================
 
 async function loadProfile() {
-
     if (!currentUser) {
         return;
     }
-
 
     const { data, error } =
         await supabaseClient
@@ -267,29 +216,21 @@ async function loadProfile() {
             .eq("id", currentUser.id)
             .single();
 
-
     if (error) {
-
         console.error("Ошибка профиля:", error);
-
         return;
     }
 
-
     currentProfile = data;
-
 
     document.getElementById("profileName")
         .innerText = data.name;
 
-
-    document.getElementById("profilePhone")
-        .innerText = data.phone;
-
+    // Если в HTML есть элемент для вывода почты в профиле, можно раскомментировать:
+    // document.getElementById("profileEmail").innerText = data.email || currentUser.email;
 
     document.getElementById("profileUploads")
         .innerText = data.uploads_count;
-
 
     document.getElementById("profileRole")
         .innerText =
@@ -297,11 +238,8 @@ async function loadProfile() {
             ? "Администратор"
             : "Учитель";
 
-
     if (data.role === "admin") {
-
         createAdminButton();
-
     }
 }
 
@@ -311,30 +249,21 @@ async function loadProfile() {
 // ======================================================
 
 function createAdminButton() {
-
     if (document.getElementById("adminNavButton")) {
         return;
     }
 
-
     const button = document.createElement("button");
-
     button.id = "adminNavButton";
-
     button.innerHTML = `
         ⚙️
         <span>Админ</span>
     `;
 
-
     button.onclick = function() {
-
         showPage("admin");
-
         loadAdmin();
-
     };
-
 
     document.querySelector("nav")
         .appendChild(button);
@@ -346,84 +275,58 @@ function createAdminButton() {
 // ======================================================
 
 async function uploadVideo() {
-
     if (!currentUser || !currentProfile) {
-
         alert("Сначала войдите в аккаунт.");
-
         return;
     }
-
 
     const title = document
         .getElementById("videoTitle")
         .value
         .trim();
 
-
     const description = document
         .getElementById("videoDescription")
         .value
         .trim();
 
-
     const category = document
         .getElementById("videoCategory")
         .value;
-
 
     const file =
         document.getElementById("videoFile")
             .files[0];
 
-
     if (!title) {
-
         alert("Введите название видео.");
-
         return;
     }
-
 
     if (!file) {
-
         alert("Выберите видео.");
-
         return;
     }
-
 
     if (!file.type.startsWith("video/")) {
-
         alert("Можно загружать только видео.");
-
         return;
     }
 
-
-    const maxSize =
-        100 * 1024 * 1024;
-
+    const maxSize = 100 * 1024 * 1024;
 
     if (file.size > maxSize) {
-
         alert("Видео должно быть не больше 100 МБ.");
-
         return;
     }
-
 
     const status =
         document.getElementById("uploadStatus");
 
-
-    status.innerText =
-        "Загрузка видео...";
-
+    status.innerText = "Загрузка видео...";
 
     const extension =
         file.name.split(".").pop();
-
 
     const fileName =
         Date.now() +
@@ -434,12 +337,10 @@ async function uploadVideo() {
         "." +
         extension;
 
-
     const filePath =
         currentUser.id +
         "/" +
         fileName;
-
 
     const { error: uploadError } =
         await supabaseClient
@@ -454,18 +355,11 @@ async function uploadVideo() {
                 }
             );
 
-
     if (uploadError) {
-
         console.error(uploadError);
-
-        status.innerText =
-            "Ошибка загрузки: " +
-            uploadError.message;
-
+        status.innerText = "Ошибка загрузки: " + uploadError.message;
         return;
     }
-
 
     const { data: urlData } =
         supabaseClient
@@ -473,87 +367,51 @@ async function uploadVideo() {
             .from("videos")
             .getPublicUrl(filePath);
 
-
-    const videoUrl =
-        urlData.publicUrl;
-
+    const videoUrl = urlData.publicUrl;
 
     const { error: insertError } =
         await supabaseClient
             .from("videos")
             .insert({
-
                 title: title,
-
                 description: description,
-
                 category: category,
-
                 video_url: videoUrl,
-
                 author_id: currentUser.id,
-
                 author_name: currentProfile.name,
-
                 views: 0
-
             });
 
-
     if (insertError) {
-
         console.error(insertError);
-
-        status.innerText =
-            "Ошибка сохранения видео.";
-
+        status.innerText = "Ошибка сохранения видео.";
         return;
     }
-
 
     const newUploadCount =
         currentProfile.uploads_count + 1;
 
-
     await supabaseClient
         .from("profiles")
         .update({
-
             uploads_count: newUploadCount
-
         })
         .eq("id", currentUser.id);
 
-
-    currentProfile.uploads_count =
-        newUploadCount;
-
+    currentProfile.uploads_count = newUploadCount;
 
     document.getElementById("profileUploads")
-        .innerText =
-        newUploadCount;
+        .innerText = newUploadCount;
 
+    status.innerText = "✅ Видео успешно опубликовано!";
 
-    status.innerText =
-        "✅ Видео успешно опубликовано!";
-
-
-    document.getElementById("videoTitle")
-        .value = "";
-
-    document.getElementById("videoDescription")
-        .value = "";
-
-    document.getElementById("videoFile")
-        .value = "";
-
+    document.getElementById("videoTitle").value = "";
+    document.getElementById("videoDescription").value = "";
+    document.getElementById("videoFile").value = "";
 
     setTimeout(function() {
-
         loadVideos();
-
         showPage("feed");
-
     }, 1500);
 }
 
@@ -563,14 +421,10 @@ async function uploadVideo() {
 // ======================================================
 
 async function loadVideos() {
-
     const container =
         document.getElementById("videoList");
 
-
-    container.innerHTML =
-        "<p>Загрузка видео...</p>";
-
+    container.innerHTML = "<p>Загрузка видео...</p>";
 
     const { data, error } =
         await supabaseClient
@@ -583,35 +437,21 @@ async function loadVideos() {
                 }
             );
 
-
     if (error) {
-
         console.error(error);
-
-        container.innerHTML =
-            "<p>Не удалось загрузить видео.</p>";
-
+        container.innerHTML = "<p>Не удалось загрузить видео.</p>";
         return;
     }
-
 
     if (!data || data.length === 0) {
-
-        container.innerHTML =
-            "<p>Пока нет загруженных видео.</p>";
-
+        container.innerHTML = "<p>Пока нет загруженных видео.</p>";
         return;
     }
-
 
     container.innerHTML = "";
 
-
     data.forEach(function(video) {
-
-        container.innerHTML +=
-            createVideoCard(video);
-
+        container.innerHTML += createVideoCard(video);
     });
 }
 
@@ -621,14 +461,10 @@ async function loadVideos() {
 // ======================================================
 
 async function loadCategory(category) {
-
     const container =
         document.getElementById("categoryVideos");
 
-
-    container.innerHTML =
-        "<p>Загрузка...</p>";
-
+    container.innerHTML = "<p>Загрузка...</p>";
 
     const { data, error } =
         await supabaseClient
@@ -642,36 +478,21 @@ async function loadCategory(category) {
                 }
             );
 
-
     if (error) {
-
         console.error(error);
-
-        container.innerHTML =
-            "<p>Ошибка загрузки.</p>";
-
+        container.innerHTML = "<p>Ошибка загрузки.</p>";
         return;
     }
 
-
-    container.innerHTML =
-        `<h3>${escapeHtml(category)}</h3>`;
-
+    container.innerHTML = `<h3>${escapeHtml(category)}</h3>`;
 
     if (!data || data.length === 0) {
-
-        container.innerHTML +=
-            "<p>В этом разделе пока нет видео.</p>";
-
+        container.innerHTML += "<p>В этом разделе пока нет видео.</p>";
         return;
     }
 
-
     data.forEach(function(video) {
-
-        container.innerHTML +=
-            createVideoCard(video);
-
+        container.innerHTML += createVideoCard(video);
     });
 }
 
@@ -681,46 +502,34 @@ async function loadCategory(category) {
 // ======================================================
 
 function createVideoCard(video) {
-
     return `
-
         <div class="video-card">
-
             <video
                 controls
                 playsinline
                 preload="metadata"
                 src="${escapeHtml(video.video_url)}">
             </video>
-
             <h3>
                 ${escapeHtml(video.title)}
             </h3>
-
             <p>
                 ${escapeHtml(
                     video.description || ""
                 )}
             </p>
-
             <small>
                 📁 ${escapeHtml(video.category)}
             </small>
-
             <br>
-
             <small>
                 👤 ${escapeHtml(video.author_name)}
             </small>
-
             <br>
-
             <small>
                 👁 ${video.views || 0}
             </small>
-
         </div>
-
     `;
 }
 
@@ -730,17 +539,13 @@ function createVideoCard(video) {
 // ======================================================
 
 async function loadAdmin() {
-
     if (
         !currentProfile ||
         currentProfile.role !== "admin"
     ) {
-
         alert("Доступ запрещён.");
-
         return;
     }
-
 
     const { data: users, error: usersError } =
         await supabaseClient
@@ -753,82 +558,50 @@ async function loadAdmin() {
                 }
             );
 
-
     if (usersError) {
-
         console.error(usersError);
-
         return;
     }
-
 
     const { data: videos, error: videosError } =
         await supabaseClient
             .from("videos")
             .select("id");
 
-
     if (videosError) {
-
         console.error(videosError);
-
         return;
     }
 
-
     document.getElementById("totalUsers")
-        .innerText =
-        users.length;
-
+        .innerText = users.length;
 
     document.getElementById("totalVideos")
-        .innerText =
-        videos.length;
-
+        .innerText = videos.length;
 
     const list =
         document.getElementById("usersList");
 
-
     list.innerHTML = "";
 
-
     users.forEach(function(user) {
-
         list.innerHTML += `
-
             <div class="user-card">
-
                 <strong>
                     ${escapeHtml(user.name)}
                 </strong>
-
                 <br>
-
                 📧 ${escapeHtml(
                     user.email || ""
                 )}
-
                 <br>
-
-                📱 ${escapeHtml(
-                    user.phone || ""
-                )}
-
-                <br>
-
                 🎬 Загружено:
                 ${user.uploads_count}
-
                 <br>
-
                 👤 Роль:
                 ${escapeHtml(user.role)}
-
             </div>
-
         `;
-
     });
 }
 
@@ -838,13 +611,9 @@ async function loadAdmin() {
 // ======================================================
 
 async function logout() {
-
     await supabaseClient.auth.signOut();
-
     currentUser = null;
-
     currentProfile = null;
-
     location.reload();
 }
 
@@ -854,21 +623,16 @@ async function logout() {
 // ======================================================
 
 function showRegister() {
-
     document.getElementById("loginScreen")
         .classList.add("hidden");
-
 
     document.getElementById("registerScreen")
         .classList.remove("hidden");
 }
 
-
 function showLogin() {
-
     document.getElementById("registerScreen")
         .classList.add("hidden");
-
 
     document.getElementById("loginScreen")
         .classList.remove("hidden");
@@ -880,12 +644,10 @@ function showLogin() {
 // ======================================================
 
 function escapeHtml(text) {
-
     const div =
         document.createElement("div");
 
-    div.textContent =
-        text;
+    div.textContent = text;
 
     return div.innerHTML;
 }
@@ -896,47 +658,33 @@ function escapeHtml(text) {
 // ======================================================
 
 async function startApp() {
-
     const { data } =
         await supabaseClient
             .auth
             .getSession();
 
-
     if (data.session) {
-
-        currentUser =
-            data.session.user;
-
+        currentUser = data.session.user;
 
         await loadProfile();
 
-
         document.getElementById("loginScreen")
             .classList.add("hidden");
-
 
         document.getElementById("registerScreen")
             .classList.add("hidden");
 
-
         document.getElementById("app")
             .style.display = "block";
 
-
         showPage("home");
-
     } else {
-
         document.getElementById("app")
             .style.display = "none";
 
-
         document.getElementById("loginScreen")
             .classList.remove("hidden");
-
     }
 }
-
 
 startApp();
