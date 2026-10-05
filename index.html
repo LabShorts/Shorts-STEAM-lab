@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Lab Shorts</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="app">
+
+    <header>
+        <h1>Lab Shorts</h1>
+        <button id="logoutBtn" onclick="logout()">Выйти</button>
+    </header>
+
+    <main>
+
+        <!-- ГЛАВНАЯ -->
+        <section id="home" class="page active">
+
+            <div class="hero">
+                <h2>Lab Shorts</h2>
+
+                <p>
+                    Образовательная платформа коротких видеоуроков
+                    для учителей и учащихся.
+                </p>
+
+                <p>
+                    Здесь учителя могут делиться
+                    полезными видео по разным предметам.
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h3>Контакты</h3>
+
+                <p>Email: labshorts@school.kz</p>
+
+                <p>
+                    Доступ предназначен для пользователей
+                    нашей школы.
+                </p>
+            </div>
+
+        </section>
+
+
+        <!-- ЛЕНТА -->
+        <section id="feed" class="page">
+
+            <h2>Лента</h2>
+
+            <div id="videoList">
+                Загрузка видео...
+            </div>
+
+        </section>
+
+
+        <!-- LAB SHORTS -->
+        <section id="lab" class="page">
+
+            <h2>Lab Shorts</h2>
+
+            <div class="categories">
+
+                <button onclick="loadCategory('Инженерия')">
+                    ⚙️ Инженерия
+                </button>
+
+                <button onclick="loadCategory('Технология')">
+                    💻 Технология
+                </button>
+
+                <button onclick="loadCategory('Математика')">
+                    📐 Математика
+                </button>
+
+                <button onclick="loadCategory('Наука')">
+                    🔬 Наука
+                </button>
+
+            </div>
+
+            <div id="categoryVideos"></div>
+
+        </section>
+
+
+        <!-- ЗАГРУЗКА -->
+        <section id="upload" class="page">
+
+            <h2>Загрузить видео</h2>
+
+            <div class="form">
+
+                <label>Название видео</label>
+
+                <input
+                    id="videoTitle"
+                    type="text"
+                    placeholder="Например: Двоичная система"
+                >
+
+
+                <label>Описание</label>
+
+                <textarea
+                    id="videoDescription"
+                    placeholder="Краткое описание видео"
+                ></textarea>
+
+
+                <label>Раздел</label>
+
+                <select id="videoCategory">
+
+                    <option value="Инженерия">
+                        Инженерия
+                    </option>
+
+                    <option value="Технология">
+                        Технология
+                    </option>
+
+                    <option value="Математика">
+                        Математика
+                    </option>
+
+                    <option value="Наука">
+                        Наука
+                    </option>
+
+                </select>
+
+
+                <label>Видео</label>
+
+                <input
+                    id="videoFile"
+                    type="file"
+                    accept="video/*"
+                >
+
+
+                <button
+                    class="primary"
+                    onclick="uploadVideo()"
+                >
+                    Опубликовать
+                </button>
+
+                <p id="uploadStatus"></p>
+
+            </div>
+
+        </section>
+
+
+        <!-- КАБИНЕТ -->
+        <section id="profile" class="page">
+
+            <h2>Личный кабинет</h2>
+
+            <div class="profile-card">
+
+                <div class="avatar">
+                    👤
+                </div>
+
+                <h3 id="profileName">
+                    Пользователь
+                </h3>
+
+                <p id="profilePhone"></p>
+
+                <p>
+                    Загружено видео:
+                    <strong id="profileUploads">0</strong>
+                </p>
+
+                <p>
+                    Роль:
+                    <strong id="profileRole">Учитель</strong>
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- АДМИН -->
+        <section id="admin" class="page">
+
+            <h2>Панель администратора</h2>
+
+            <div class="stats">
+
+                <div>
+                    <strong id="totalUsers">0</strong>
+                    <span>Пользователей</span>
+                </div>
+
+                <div>
+                    <strong id="totalVideos">0</strong>
+                    <span>Видео</span>
+                </div>
+
+            </div>
+
+            <h3>Пользователи</h3>
+
+            <div id="usersList"></div>
+
+        </section>
+
+    </main>
+
+
+    <!-- НИЖНЕЕ МЕНЮ -->
+
+    <nav>
+
+        <button onclick="showPage('home')">
+            🏠
+            <span>Главная</span>
+        </button>
+
+        <button onclick="showPage('feed'); loadVideos()">
+            ▶️
+            <span>Лента</span>
+        </button>
+
+        <button onclick="showPage('lab')">
+            🧪
+            <span>Lab Shorts</span>
+        </button>
+
+        <button
+            class="upload-button"
+            onclick="showPage('upload')"
+        >
+            ＋
+        </button>
+
+        <button onclick="showPage('profile')">
+            👤
+            <span>Кабинет</span>
+        </button>
+
+    </nav>
+
+</div>
+
+
+<!-- LOGIN -->
+
+<div id="loginScreen">
+
+    <div class="login-box">
+
+        <h1>Lab Shorts</h1>
+
+        <p>Образовательная платформа школы</p>
+
+
+        <input
+            id="loginPhone"
+            type="text"
+            placeholder="Номер телефона"
+        >
+
+        <input
+            id="loginPassword"
+            type="password"
+            placeholder="Пароль"
+        >
+
+        <button
+            class="primary"
+            onclick="login()"
+        >
+            Войти
+        </button>
+
+
+        <button
+            class="secondary"
+            onclick="showRegister()"
+        >
+            Регистрация
+        </button>
+
+        <p id="loginMessage"></p>
+
+    </div>
+
+</div>
+
+
+<!-- REGISTER -->
+
+<div id="registerScreen" class="hidden">
+
+    <div class="login-box">
+
+        <h1>Регистрация</h1>
+
+
+        <input
+            id="registerName"
+            type="text"
+            placeholder="Имя и фамилия"
+        >
+
+
+        <input
+            id="registerPhone"
+            type="text"
+            placeholder="Номер телефона"
+        >
+
+
+        <input
+            id="registerPassword"
+            type="password"
+            placeholder="Пароль"
+        >
+
+
+        <input
+            id="schoolCode"
+            type="text"
+            placeholder="Код школы"
+        >
+
+
+        <button
+            class="primary"
+            onclick="register()"
+        >
+            Создать аккаунт
+        </button>
+
+
+        <button
+            class="secondary"
+            onclick="showLogin()"
+        >
+            Уже есть аккаунт
+        </button>
+
+
+        <p id="registerMessage"></p>
+
+    </div>
+
+</div>
+
+
+<script src="app.js"></script>
+
+</body>
+</html>
